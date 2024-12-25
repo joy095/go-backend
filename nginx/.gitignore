@@ -1,12 +1,1 @@
-/logs
-/temp
-
-/docs
-
-/html
-
-/default.conf
-
-/nginx.exe
-
-/certificate
+default.conf
