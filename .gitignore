@@ -1,15 +1,11 @@
 /tmp
-
 .env
-
-.nginx
-
+/vendor
 main.exe
 
 
+.nginx
 logs
 temp
-
 docs
-
 nginx.exe

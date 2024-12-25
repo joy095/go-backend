@@ -1,4 +1,4 @@
-/tmp
+tmp/
 
 logs/
 temp/
@@ -7,3 +7,7 @@ html/
 default.conf
 nginx.exe
 certificate/
+vendor/
+
+*.log
+*.bak
