@@ -38,3 +38,5 @@
 2024/12/25 10:12:33 [notice] 17200#17596: signal process started
 2024/12/25 12:17:22 [emerg] 16004#17388: cannot load certificate "D:/etc/nginx/certificate/go-backend.crt": BIO_new_file() failed (SSL: error:80000003:system library::No such process:calling fopen(D:/etc/nginx/certificate/go-backend.crt, r) error:10000080:BIO routines::no such file)
 2024/12/25 12:19:04 [notice] 14672#2096: signal process started
+2024/12/25 13:51:13 [emerg] 1376#7036: host not found in upstream "go-backend:5000" in D:\backend\nginx/conf/nginx.conf:10
+2024/12/25 13:51:39 [emerg] 12168#8400: host not found in upstream "go-backend:5000" in D:\backend\nginx/conf/nginx.conf:10
