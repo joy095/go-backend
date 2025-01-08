@@ -1,11 +1,9 @@
 /tmp
 .env
 /vendor
-main.exe
 
 
 .nginx
 logs
 temp
 docs
-nginx.exe
