@@ -1,5 +1,5 @@
 # Stage 1: Build Go Application
-FROM golang:1.21-alpine AS builder
+FROM golang:1.23-alpine AS builder
 
 # Set the working directory
 WORKDIR /app
@@ -28,8 +28,23 @@ WORKDIR /app
 # Copy the compiled binary from the builder stage
 COPY --from=builder /app/app .
 
-# Create a non-root user
-RUN adduser -D appuser
+# Script to check environment variables and start the application
+COPY <<'EOF' /app/start.sh
+#!/bin/bash
+if [ -z "${DB_URI}" ]; then
+    echo "ERROR: DB_URI environment variable is required"
+    exit 1
+fi
+exec ./app
+EOF
+
+# Set permissions before switching user
+RUN chmod +x /app/start.sh && \
+    chmod +x /app/app
+
+# Create a non-root user and set ownership
+RUN adduser -D appuser && \
+    chown -R appuser:appuser /app
 USER appuser
 
 # Default environment variables with ability to override
@@ -42,18 +57,6 @@ EXPOSE ${PORT}
 # Add a healthcheck
 HEALTHCHECK --interval=30s --timeout=3s \
   CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT}/health || exit 1
-
-# Script to check environment variables and start the application
-COPY <<'EOF' /app/start.sh
-#!/bin/bash
-if [ -z "${DB_URI}" ]; then
-    echo "ERROR: DB_URI environment variable is required"
-    exit 1
-fi
-exec ./app
-EOF
-
-RUN chmod +x /app/start.sh
 
 # Use the start script as the entrypoint
 ENTRYPOINT ["/app/start.sh"]
