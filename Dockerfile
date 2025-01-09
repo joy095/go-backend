@@ -1,6 +1,17 @@
 # Stage 1: Build Go Application
 FROM golang:1.23 AS builder
 
+# Set build-time variables
+ARG PORT
+ARG DB_URI
+
+# Set environment variables
+ENV PORT=$PORT
+ENV DATABASE_URI=$DB_URI
+
+# Expose the application port
+EXPOSE $PORT
+
 # Set the working directory inside the container
 WORKDIR /app
 
@@ -27,9 +38,6 @@ WORKDIR /app
 
 # Copy the compiled binary from the builder stage
 COPY --from=builder /app/app .
-
-# Expose the application port
-EXPOSE 5000
 
 # Command to run the application
 CMD ["./app"]

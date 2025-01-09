@@ -1,10 +1,18 @@
 # @format
 
-version: "3.8"
 services:
   app:
     image: go_backend
-    ports:
-      - "5000:5000"
+    build:
+      context: .
+      args:
+        PORT: ${PORT:-5000} # Default value if PORT is not provided
+        DB_URI: ${DB_URI} # Ensure DB_URI is passed or use a fallback
     environment:
-      - DB_URI=${DB_URI}
+      - PORT=${PORT}
+      - DATABASE_URI=${DB_URI}
+    ports:
+      - "${PORT}:${PORT}"
+    volumes:
+      - .env:/app/.env # Optional .env file for environment variables
+
