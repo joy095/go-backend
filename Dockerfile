@@ -30,8 +30,8 @@ COPY --from=builder /app/app .
 
 # Create start script
 RUN echo '#!/bin/bash' > /app/start.sh && \
-    echo 'if [ -z "${DB_URI}" ]; then' >> /app/start.sh && \
-    echo '    echo "ERROR: DB_URI environment variable is required"' >> /app/start.sh && \
+    echo 'if [ -z "${DB_RENDER_URI}" ]; then' >> /app/start.sh && \
+    echo '    echo "ERROR: DB_RENDER_URI environment variable is required"' >> /app/start.sh && \
     echo '    exit 1' >> /app/start.sh && \
     echo 'fi' >> /app/start.sh && \
     echo 'exec ./app' >> /app/start.sh
@@ -47,7 +47,7 @@ USER appuser
 
 # Default environment variables with ability to override
 ENV PORT=8080 \
-    DB_URI=""
+    DB_RENDER_URI=""
 
 # Expose the port
 EXPOSE ${PORT}

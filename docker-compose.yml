@@ -9,10 +9,10 @@ services:
       context: .
       args:
         PORT: ${PORT:-5000} # Default value if PORT is not provided
-        DB_URI: ${DB_URI} # Ensure DB_URI is passed or use a fallback
+        DB_RENDER_URI: ${DB_RENDER_URI} # Ensure DB_RENDER_URI is passed or use a fallback
     environment:
       - PORT=${PORT}
-      - DB_URI=${DB_URI}
+      - DB_RENDER_URI=${DB_RENDER_URI}
     ports:
       - "${PORT}:${PORT}"
     volumes:
