@@ -1,21 +1,11 @@
 # Stage 1: Build Go Application
-FROM golang:1.23 AS builder
+FROM golang:1.21-alpine AS builder
 
-# Set build-time variables
-ARG PORT
-ARG DB_URI
-
-# Set environment variables
-ENV PORT=$PORT
-ENV DATABASE_URI=$DB_URI
-
-EXPOSE $PORT
-
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
 
 # Copy go.mod and go.sum for dependency caching
-COPY go.mod go.sum ./  
+COPY go.mod go.sum ./
 
 # Download and cache Go modules
 RUN go mod download
@@ -26,7 +16,7 @@ COPY . .
 # Build the application binary (static build for portability)
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app ./cmd/main.go
 
-# Stage 2: Create a lightweight image for running the application
+# Stage 2: Create a lightweight runtime image
 FROM alpine:latest
 
 # Install necessary packages
@@ -38,5 +28,32 @@ WORKDIR /app
 # Copy the compiled binary from the builder stage
 COPY --from=builder /app/app .
 
-# Command to run the application
-CMD ["./app"]
+# Create a non-root user
+RUN adduser -D appuser
+USER appuser
+
+# Default environment variables with ability to override
+ENV PORT=8080 \
+    DATABASE_URI=""
+
+# Expose the port
+EXPOSE ${PORT}
+
+# Add a healthcheck
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT}/health || exit 1
+
+# Script to check environment variables and start the application
+COPY <<'EOF' /app/start.sh
+#!/bin/bash
+if [ -z "${DATABASE_URI}" ]; then
+    echo "ERROR: DATABASE_URI environment variable is required"
+    exit 1
+fi
+exec ./app
+EOF
+
+RUN chmod +x /app/start.sh
+
+# Use the start script as the entrypoint
+ENTRYPOINT ["/app/start.sh"]
