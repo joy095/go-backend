@@ -9,14 +9,13 @@ ARG DB_URI
 ENV PORT=$PORT
 ENV DATABASE_URI=$DB_URI
 
-# Expose the application port
 EXPOSE $PORT
 
 # Set the working directory inside the container
 WORKDIR /app
 
 # Copy go.mod and go.sum for dependency caching
-COPY go.mod go.sum ./
+COPY go.mod go.sum ./  
 
 # Download and cache Go modules
 RUN go mod download

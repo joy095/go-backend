@@ -1,5 +1,7 @@
 # @format
 
+version: "1.0"
+
 services:
   app:
     image: go_backend
