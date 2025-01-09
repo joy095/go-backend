@@ -28,33 +28,21 @@ WORKDIR /app
 # Copy the compiled binary from the builder stage
 COPY --from=builder /app/app .
 
-# Create start script
-RUN echo '#!/bin/bash' > /app/start.sh && \
-    echo 'if [ -z "${DB_RENDER_URI}" ]; then' >> /app/start.sh && \
-    echo '    echo "ERROR: DB_RENDER_URI environment variable is required"' >> /app/start.sh && \
-    echo '    exit 1' >> /app/start.sh && \
-    echo 'fi' >> /app/start.sh && \
-    echo 'exec ./app' >> /app/start.sh
-
-# Set permissions before switching user
-RUN chmod +x /app/start.sh && \
-    chmod +x /app/app
-
 # Create a non-root user and set ownership
 RUN adduser -D appuser && \
     chown -R appuser:appuser /app
+
+# Make the binary executable
+RUN chmod +x /app/app
+
 USER appuser
 
-# Default environment variables with ability to override
-ENV PORT=8080 \
-    DB_RENDER_URI=""
+# Default environment variables
+ENV PORT=8080
+ENV DB_URI=""
 
 # Expose the port
 EXPOSE ${PORT}
 
-# Add a healthcheck
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT}/health || exit 1
-
-# Use the start script as the entrypoint
-ENTRYPOINT ["/app/start.sh"]
+# Directly run the application
+CMD ["./app"]
