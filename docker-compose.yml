@@ -12,7 +12,7 @@ services:
         DB_URI: ${DB_URI} # Ensure DB_URI is passed or use a fallback
     environment:
       - PORT=${PORT}
-      - DATABASE_URI=${DB_URI}
+      - DB_URI=${DB_URI}
     ports:
       - "${PORT}:${PORT}"
     volumes:

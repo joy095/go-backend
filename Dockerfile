@@ -34,7 +34,7 @@ USER appuser
 
 # Default environment variables with ability to override
 ENV PORT=8080 \
-    DATABASE_URI=""
+    DB_URI=""
 
 # Expose the port
 EXPOSE ${PORT}
@@ -46,8 +46,8 @@ HEALTHCHECK --interval=30s --timeout=3s \
 # Script to check environment variables and start the application
 COPY <<'EOF' /app/start.sh
 #!/bin/bash
-if [ -z "${DATABASE_URI}" ]; then
-    echo "ERROR: DATABASE_URI environment variable is required"
+if [ -z "${DB_URI}" ]; then
+    echo "ERROR: DB_URI environment variable is required"
     exit 1
 fi
 exec ./app
