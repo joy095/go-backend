@@ -1,0 +1,10 @@
+# @format
+
+version: "3.8"
+services:
+  app:
+    image: go_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_URI=${DB_URI}

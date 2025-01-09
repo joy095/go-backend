@@ -1,0 +1,13 @@
+tmp/
+
+logs/
+temp/
+docs/
+html/
+default.conf
+nginx.exe
+certificate/
+vendor/
+
+*.log
+*.bak
