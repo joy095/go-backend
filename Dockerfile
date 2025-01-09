@@ -28,15 +28,13 @@ WORKDIR /app
 # Copy the compiled binary from the builder stage
 COPY --from=builder /app/app .
 
-# Script to check environment variables and start the application
-COPY <<'EOF' /app/start.sh
-#!/bin/bash
-if [ -z "${DB_URI}" ]; then
-    echo "ERROR: DB_URI environment variable is required"
-    exit 1
-fi
-exec ./app
-EOF
+# Create start script
+RUN echo '#!/bin/bash' > /app/start.sh && \
+    echo 'if [ -z "${DB_URI}" ]; then' >> /app/start.sh && \
+    echo '    echo "ERROR: DB_URI environment variable is required"' >> /app/start.sh && \
+    echo '    exit 1' >> /app/start.sh && \
+    echo 'fi' >> /app/start.sh && \
+    echo 'exec ./app' >> /app/start.sh
 
 # Set permissions before switching user
 RUN chmod +x /app/start.sh && \
